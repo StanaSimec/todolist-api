@@ -10,6 +10,4 @@ public interface UserDao {
     User create(User user);
 
     boolean isEmailUnique(String email);
-
-    boolean isEmailUniqueIgnoreUserId(String email, int userId);
 }

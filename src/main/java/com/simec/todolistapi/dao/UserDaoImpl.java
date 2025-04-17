@@ -61,12 +61,6 @@ public class UserDaoImpl implements UserDao {
         return Boolean.TRUE.equals(jdbcTemplate.queryForObject(sql, Boolean.class, email));
     }
 
-    @Override
-    public boolean isEmailUniqueIgnoreUserId(String email, int userId) {
-        String sql = "SELECT COUNT(*) = 0 FROM person WHERE email = ? AND id != ?";
-        return Boolean.TRUE.equals(jdbcTemplate.queryForObject(sql, Boolean.class, email, userId));
-    }
-
     private static class UserRowMapper implements RowMapper<User> {
         @Override
         public User mapRow(ResultSet rs, int rowNum) throws SQLException {
