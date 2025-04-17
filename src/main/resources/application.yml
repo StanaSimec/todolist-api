@@ -1,0 +1,14 @@
+spring:
+  application:
+    name: todoListApi
+  datasource:
+    url: jdbc:postgresql://localhost:5432/postgres
+    username: postgres
+    password:
+  sql:
+    init:
+      mode: always
+jwt:
+  secret:
+  duration: 5m
+  issuer: todolistapi
