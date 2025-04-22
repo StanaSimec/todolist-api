@@ -48,7 +48,7 @@ public class UserDaoImpl implements UserDao {
         }, keyHolder);
         Objects.requireNonNull(keyHolder.getKeys());
         return new User.Builder()
-                .withId((int) keyHolder.getKeys().get("id"))
+                .withId(((Integer) keyHolder.getKeys().get("id")))
                 .withUsername((String) keyHolder.getKeys().get("username"))
                 .withEmail((String) keyHolder.getKeys().get("email"))
                 .withPassword((String) keyHolder.getKeys().get("password"))

@@ -1,7 +1,7 @@
 package com.simec.todolistapi.entity;
 
 public class User {
-    private final int id;
+    private final long id;
     private final String username;
     private final String email;
     private final String password;
@@ -13,7 +13,7 @@ public class User {
         this.password = builder.password;
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
@@ -30,12 +30,12 @@ public class User {
     }
 
     public static class Builder {
-        private int id = 0;
+        private long id = 0;
         private String username = "";
         private String email = "";
         private String password = "";
 
-        public Builder withId(int id) {
+        public Builder withId(long id) {
             this.id = id;
             return this;
         }
