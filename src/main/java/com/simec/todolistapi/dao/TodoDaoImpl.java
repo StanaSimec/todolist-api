@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -23,6 +24,12 @@ public class TodoDaoImpl implements TodoDao {
     @Autowired
     public TodoDaoImpl(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
+    }
+
+    @Override
+    public List<Todo> findAllWithPaging(Integer offset, Integer limit) {
+        String sql = "SELECT id, title, description, person_id FROM todo OFFSET ? LIMIT ?";
+        return jdbcTemplate.query(sql, new TodoRowMapper(), offset, limit);
     }
 
     @Override

@@ -13,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Component
 public class TodoServiceImpl implements TodoService {
     private final TodoDao todoDao;
@@ -24,6 +26,15 @@ public class TodoServiceImpl implements TodoService {
         this.todoDao = todoDao;
         this.authentication = authentication;
         this.userDao = userDao;
+    }
+
+    @Override
+    public List<TodoResponseDto> findAllWithPaging(Integer page, Integer limit) {
+        int todosPerPage = 10;
+        int offset = todosPerPage * page;
+        return todoDao.findAllWithPaging(offset, limit).stream()
+                .map(t -> new TodoResponseDto(t.getId(), t.getTitle(), t.getDescription()))
+                .toList();
     }
 
     @Override

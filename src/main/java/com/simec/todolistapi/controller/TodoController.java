@@ -8,8 +8,11 @@ import com.simec.todolistapi.exception.UserNotFoundException;
 import com.simec.todolistapi.service.TodoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/todos")
@@ -25,6 +28,15 @@ public class TodoController {
     @PostMapping
     public ResponseEntity<TodoResponseDto> create(@RequestBody TodoRequestDto dto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(todoService.create(dto));
+    }
+
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<TodoResponseDto>> find(@RequestParam(name = "page", defaultValue = "1", required = false) Integer page,
+                                                     @RequestParam(name = "limit", defaultValue = "10", required = false) Integer limit) {
+        if (page <= 0 || page > 100 || limit <= 0 || limit > 100) {
+            throw new IllegalArgumentException("Page and limit must be between 1 and 100");
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(todoService.findAllWithPaging(page, limit));
     }
 
     @PutMapping("/{id}")
@@ -51,5 +63,10 @@ public class TodoController {
     @ExceptionHandler(UserNotFoundException.class)
     public ResponseEntity<ErrorDto> handleUserNotFound(Exception e) {
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ErrorDto(e.getMessage()));
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<ErrorDto> validationException(Exception e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorDto(e.getMessage()));
     }
 }
