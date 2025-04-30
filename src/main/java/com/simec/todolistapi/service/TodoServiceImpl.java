@@ -30,8 +30,7 @@ public class TodoServiceImpl implements TodoService {
 
     @Override
     public List<TodoResponseDto> findAllWithPaging(Integer page, Integer limit) {
-        int todosPerPage = 10;
-        int offset = todosPerPage * page;
+        int offset = (page - 1) * limit;
         return todoDao.findAllWithPaging(offset, limit).stream()
                 .map(t -> new TodoResponseDto(t.getId(), t.getTitle(), t.getDescription()))
                 .toList();

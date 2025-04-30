@@ -1,7 +1,6 @@
 package com.simec.todolistapi.controller;
 
 import com.auth0.jwt.exceptions.JWTVerificationException;
-import com.auth0.jwt.exceptions.SignatureVerificationException;
 import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.simec.todolistapi.dto.ErrorDto;
 import com.simec.todolistapi.exception.TodoNotFoundException;
