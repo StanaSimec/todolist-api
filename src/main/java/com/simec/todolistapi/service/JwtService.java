@@ -1,7 +1,5 @@
 package com.simec.todolistapi.service;
 
-import java.util.Optional;
-
 public interface JwtService {
     String generateForEmail(String email);
 

@@ -34,18 +34,18 @@ public class JwtServiceImpl implements JwtService {
 
     @Override
     public void validateToken(String token) {
-            JWTVerifier verifier = JWT.require(algorithm)
-                    .withIssuer(jwtProperties.getIssuer())
-                    .build();
-            verifier.verify(token);
+        JWTVerifier verifier = JWT.require(algorithm)
+                .withIssuer(jwtProperties.getIssuer())
+                .build();
+        verifier.verify(token);
     }
 
     @Override
     public String extractEmail(String token) {
-            JWTVerifier verifier = JWT.require(algorithm)
-                    .withIssuer(jwtProperties.getIssuer())
-                    .build();
-            DecodedJWT jwt = verifier.verify(token);
-            return jwt.getClaim(EMAIL).asString();
+        JWTVerifier verifier = JWT.require(algorithm)
+                .withIssuer(jwtProperties.getIssuer())
+                .build();
+        DecodedJWT jwt = verifier.verify(token);
+        return jwt.getClaim(EMAIL).asString();
     }
 }
