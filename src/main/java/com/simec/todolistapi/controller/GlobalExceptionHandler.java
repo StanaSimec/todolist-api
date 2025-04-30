@@ -1,5 +1,8 @@
 package com.simec.todolistapi.controller;
 
+import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.auth0.jwt.exceptions.SignatureVerificationException;
+import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.simec.todolistapi.dto.ErrorDto;
 import com.simec.todolistapi.exception.TodoNotFoundException;
 import com.simec.todolistapi.exception.UserNotFoundException;
@@ -30,5 +33,15 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<ErrorDto> handleBadCredentials(Exception e) {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorDto(e.getMessage()));
+    }
+
+    @ExceptionHandler(TokenExpiredException.class)
+    public ResponseEntity<ErrorDto> handleExpiredJwt(Exception e) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorDto("Expired token"));
+    }
+
+    @ExceptionHandler(JWTVerificationException.class)
+    public ResponseEntity<ErrorDto> handleInvalidJwt(Exception e) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorDto("Invalid token"));
     }
 }

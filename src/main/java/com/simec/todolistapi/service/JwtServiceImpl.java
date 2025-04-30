@@ -3,15 +3,12 @@ package com.simec.todolistapi.service;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
-import com.auth0.jwt.exceptions.JWTVerificationException;
-import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.simec.todolistapi.properties.JwtProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.time.Instant;
-import java.util.Optional;
 
 @Component
 public class JwtServiceImpl implements JwtService {
@@ -36,29 +33,19 @@ public class JwtServiceImpl implements JwtService {
     }
 
     @Override
-    public boolean isValid(String token) {
-        try {
+    public void validateToken(String token) {
             JWTVerifier verifier = JWT.require(algorithm)
                     .withIssuer(jwtProperties.getIssuer())
                     .build();
             verifier.verify(token);
-            return true;
-        } catch (JWTVerificationException e) {
-            return false;
-        }
     }
 
     @Override
-    public Optional<String> extractEmail(String token) {
-        try {
+    public String extractEmail(String token) {
             JWTVerifier verifier = JWT.require(algorithm)
                     .withIssuer(jwtProperties.getIssuer())
                     .build();
             DecodedJWT jwt = verifier.verify(token);
-            Claim claim = jwt.getClaim(EMAIL);
-            return claim.isNull() ? Optional.empty() : Optional.ofNullable(claim.asString());
-        } catch (JWTVerificationException e) {
-            return Optional.empty();
-        }
+            return jwt.getClaim(EMAIL).asString();
     }
 }

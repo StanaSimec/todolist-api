@@ -5,7 +5,7 @@ import java.util.Optional;
 public interface JwtService {
     String generateForEmail(String email);
 
-    boolean isValid(String token);
+    void validateToken(String token);
 
-    Optional<String> extractEmail(String jwt);
+    String extractEmail(String jwt);
 }
