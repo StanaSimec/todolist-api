@@ -29,7 +29,11 @@ public class TodoDaoImpl implements TodoDao {
     @Override
     public List<Todo> findAllWithPaging(Integer offset, Integer limit) {
         String sql = "SELECT id, title, description, person_id FROM todo OFFSET ? LIMIT ?";
-        return jdbcTemplate.query(sql, new TodoRowMapper(), offset, limit);
+        try {
+            return jdbcTemplate.query(sql, new TodoRowMapper(), offset, limit);
+        } catch (EmptyResultDataAccessException e) {
+            return List.of();
+        }
     }
 
     @Override
@@ -72,6 +76,12 @@ public class TodoDaoImpl implements TodoDao {
     public void deleteById(long id) {
         String sql = "DELETE FROM todo WHERE id = ?";
         jdbcTemplate.update(sql, id);
+    }
+
+    @Override
+    public Integer getTotalCount() {
+        String sql = "SELECT COUNT(*) FROM todo";
+        return jdbcTemplate.queryForObject(sql, Integer.class);
     }
 
     private static class TodoRowMapper implements RowMapper<Todo> {

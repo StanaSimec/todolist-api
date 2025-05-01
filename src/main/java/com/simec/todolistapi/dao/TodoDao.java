@@ -15,4 +15,6 @@ public interface TodoDao {
     void update(Todo todo);
 
     void deleteById(long id);
+
+    Integer getTotalCount();
 }

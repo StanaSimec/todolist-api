@@ -1,5 +1,6 @@
 package com.simec.todolistapi.controller;
 
+import com.simec.todolistapi.dto.TodoPagedResponseDto;
 import com.simec.todolistapi.dto.TodoRequestDto;
 import com.simec.todolistapi.dto.TodoResponseDto;
 import com.simec.todolistapi.service.TodoService;
@@ -8,8 +9,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/todos")
@@ -28,8 +27,8 @@ public class TodoController {
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<TodoResponseDto>> find(@RequestParam(name = "page", defaultValue = "1", required = false) Integer page,
-                                                      @RequestParam(name = "limit", defaultValue = "10", required = false) Integer limit) {
+    public ResponseEntity<TodoPagedResponseDto> find(@RequestParam(name = "page", defaultValue = "1", required = false) Integer page,
+                                                     @RequestParam(name = "limit", defaultValue = "10", required = false) Integer limit) {
         if (page <= 0 || page > 100 || limit <= 0 || limit > 100) {
             throw new IllegalArgumentException("Page and limit must be between 1 and 100");
         }

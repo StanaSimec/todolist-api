@@ -3,6 +3,7 @@ package com.simec.todolistapi.service;
 import com.simec.todolistapi.AuthenticationFacade;
 import com.simec.todolistapi.dao.TodoDao;
 import com.simec.todolistapi.dao.UserDao;
+import com.simec.todolistapi.dto.TodoPagedResponseDto;
 import com.simec.todolistapi.dto.TodoRequestDto;
 import com.simec.todolistapi.dto.TodoResponseDto;
 import com.simec.todolistapi.entity.Todo;
@@ -29,11 +30,15 @@ public class TodoServiceImpl implements TodoService {
     }
 
     @Override
-    public List<TodoResponseDto> findAllWithPaging(Integer page, Integer limit) {
+    public TodoPagedResponseDto findAllWithPaging(Integer selectedPage, Integer limit) {
+        int totalTodos = todoDao.getTotalCount();
+        int maxPage = (int) Math.ceil((double) totalTodos / limit);
+        int page = Math.min(selectedPage, maxPage);
         int offset = (page - 1) * limit;
-        return todoDao.findAllWithPaging(offset, limit).stream()
+        List<TodoResponseDto> data = todoDao.findAllWithPaging(offset, limit).stream()
                 .map(t -> new TodoResponseDto(t.getId(), t.getTitle(), t.getDescription()))
                 .toList();
+        return new TodoPagedResponseDto(data, page, limit, maxPage);
     }
 
     @Override
