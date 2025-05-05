@@ -1,8 +1,21 @@
 package com.simec.todolistapi.dto;
 
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import org.hibernate.validator.constraints.Length;
+
 public class RegisterDto {
+
+    @NotBlank
+    @Length(min = 3, max = 50)
     private String username;
+
+    @NotBlank
+    @Email
     private String email;
+
+    @NotBlank
+    @Length(min = 5, max = 50)
     private String password;
 
     public String getUsername() {

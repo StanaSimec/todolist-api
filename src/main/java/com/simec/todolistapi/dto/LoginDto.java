@@ -1,7 +1,17 @@
 package com.simec.todolistapi.dto;
 
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import org.hibernate.validator.constraints.Length;
+
 public class LoginDto {
+
+    @NotBlank
+    @Email
     private String email;
+
+    @NotBlank
+    @Length(min = 5, max = 50)
     private String password;
 
     public String getEmail() {
