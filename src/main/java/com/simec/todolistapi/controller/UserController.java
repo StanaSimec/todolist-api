@@ -1,8 +1,8 @@
 package com.simec.todolistapi.controller;
 
-import com.simec.todolistapi.dto.LoginDto;
-import com.simec.todolistapi.dto.RegisterDto;
-import com.simec.todolistapi.dto.TokenDto;
+import com.simec.todolistapi.dto.LoginRequestDto;
+import com.simec.todolistapi.dto.RegisterRequestDto;
+import com.simec.todolistapi.dto.TokenResponseDto;
 import com.simec.todolistapi.entity.User;
 import com.simec.todolistapi.service.JwtService;
 import com.simec.todolistapi.service.UserService;
@@ -29,17 +29,17 @@ public class UserController {
 
     @PostMapping(value = "/register", consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<TokenDto> register(@RequestBody @Valid RegisterDto registerDto) {
+    public ResponseEntity<TokenResponseDto> register(@RequestBody @Valid RegisterRequestDto registerDto) {
         User user = userService.register(registerDto);
         String token = jwtService.generateForEmail(user.getEmail());
-        return ResponseEntity.status(HttpStatus.CREATED).body(new TokenDto(token));
+        return ResponseEntity.status(HttpStatus.CREATED).body(new TokenResponseDto(token));
     }
 
     @PostMapping(value = "/login", consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<TokenDto> login(@RequestBody @Valid LoginDto loginDto) {
+    public ResponseEntity<TokenResponseDto> login(@RequestBody @Valid LoginRequestDto loginDto) {
         User user = userService.login(loginDto);
         String token = jwtService.generateForEmail(user.getEmail());
-        return ResponseEntity.status(HttpStatus.CREATED).body(new TokenDto(token));
+        return ResponseEntity.status(HttpStatus.CREATED).body(new TokenResponseDto(token));
     }
 }

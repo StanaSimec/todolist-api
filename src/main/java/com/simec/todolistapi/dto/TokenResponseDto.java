@@ -1,9 +1,9 @@
 package com.simec.todolistapi.dto;
 
-public class TokenDto {
+public class TokenResponseDto {
     private String token;
 
-    public TokenDto(String token) {
+    public TokenResponseDto(String token) {
         this.token = token;
     }
 

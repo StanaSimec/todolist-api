@@ -1,8 +1,8 @@
 package com.simec.todolistapi.service;
 
 import com.simec.todolistapi.dao.UserDao;
-import com.simec.todolistapi.dto.LoginDto;
-import com.simec.todolistapi.dto.RegisterDto;
+import com.simec.todolistapi.dto.LoginRequestDto;
+import com.simec.todolistapi.dto.RegisterRequestDto;
 import com.simec.todolistapi.entity.User;
 import com.simec.todolistapi.exception.UserNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +26,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User register(RegisterDto registerRequestDTO) {
+    public User register(RegisterRequestDto registerRequestDTO) {
         User user = new User.Builder()
                 .withUsername(registerRequestDTO.getUsername())
                 .withEmail(registerRequestDTO.getEmail())
@@ -36,7 +36,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User login(LoginDto loginDto) {
+    public User login(LoginRequestDto loginDto) {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                 loginDto.getEmail(),
                 loginDto.getPassword()
