@@ -28,9 +28,9 @@ public class UserServiceImpl implements UserService {
     @Override
     public User register(RegisterRequestDto registerRequestDTO) {
         User user = new User.Builder()
-                .withUsername(registerRequestDTO.getUsername())
-                .withEmail(registerRequestDTO.getEmail())
-                .withPassword(passwordEncoder.encode(registerRequestDTO.getPassword()))
+                .withUsername(registerRequestDTO.username())
+                .withEmail(registerRequestDTO.email())
+                .withPassword(passwordEncoder.encode(registerRequestDTO.password()))
                 .build();
         return userDAO.create(user);
     }
@@ -38,9 +38,9 @@ public class UserServiceImpl implements UserService {
     @Override
     public User login(LoginRequestDto loginDto) {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
-                loginDto.getEmail(),
-                loginDto.getPassword()
+                loginDto.email(),
+                loginDto.password()
         ));
-        return userDAO.findByEmail(loginDto.getEmail()).orElseThrow(() -> new UserNotFoundException("user not found"));
+        return userDAO.findByEmail(loginDto.email()).orElseThrow(() -> new UserNotFoundException("user not found"));
     }
 }
