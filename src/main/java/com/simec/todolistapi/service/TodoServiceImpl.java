@@ -35,7 +35,8 @@ public class TodoServiceImpl implements TodoService {
         int maxPage = (int) Math.ceil((double) totalTodos / limit);
         int page = Math.min(selectedPage, maxPage);
         int offset = (page - 1) * limit;
-        List<TodoResponseDto> data = todoDao.findAllWithPaging(offset, limit).stream()
+        User user = getPrincipalUser();
+        List<TodoResponseDto> data = todoDao.findAll(offset, limit, user.getId()).stream()
                 .map(t -> new TodoResponseDto(t.getId(), t.getTitle(), t.getDescription()))
                 .toList();
         return new TodoPagedResponseDto(data, page, limit, maxPage);
@@ -86,7 +87,7 @@ public class TodoServiceImpl implements TodoService {
     }
 
     private Todo getTodoByTodoIdAndPersonId(long todoId, long userId) {
-        return todoDao.findByTodoIdAndPersonId(todoId, userId)
+        return todoDao.findById(todoId, userId)
                 .orElseThrow(() -> new TodoNotFoundException("Todo was not found"));
     }
 }

@@ -6,11 +6,11 @@ import java.util.List;
 import java.util.Optional;
 
 public interface TodoDao {
-    List<Todo> findAllWithPaging(Integer offset, Integer limit);
+    List<Todo> findAll(Integer offset, Integer limit, long personId);
 
     Todo create(Todo todo);
 
-    Optional<Todo> findByTodoIdAndPersonId(long todoId, long personId);
+    Optional<Todo> findById(long todoId, long personId);
 
     void update(Todo todo);
 

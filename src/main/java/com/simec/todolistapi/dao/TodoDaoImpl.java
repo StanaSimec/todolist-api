@@ -27,10 +27,10 @@ public class TodoDaoImpl implements TodoDao {
     }
 
     @Override
-    public List<Todo> findAllWithPaging(Integer offset, Integer limit) {
-        String sql = "SELECT id, title, description, person_id FROM todo OFFSET ? LIMIT ?";
+    public List<Todo> findAll(Integer offset, Integer limit, long personId) {
+        String sql = "SELECT id, title, description, person_id FROM todo WHERE person_id = ? OFFSET ? LIMIT ?";
         try {
-            return jdbcTemplate.query(sql, new TodoRowMapper(), offset, limit);
+            return jdbcTemplate.query(sql, new TodoRowMapper(), personId, offset, limit);
         } catch (EmptyResultDataAccessException e) {
             return List.of();
         }
@@ -57,7 +57,7 @@ public class TodoDaoImpl implements TodoDao {
     }
 
     @Override
-    public Optional<Todo> findByTodoIdAndPersonId(long todoId, long personId) {
+    public Optional<Todo> findById(long todoId, long personId) {
         String sql = "SELECT id, title, description, person_id FROM todo WHERE id = ? AND person_id = ?";
         try {
             return Optional.ofNullable(jdbcTemplate.queryForObject(sql, new TodoRowMapper(), todoId, personId));

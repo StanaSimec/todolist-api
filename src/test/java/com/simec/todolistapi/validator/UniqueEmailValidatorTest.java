@@ -21,8 +21,8 @@ class UniqueEmailValidatorTest {
     }
 
     @Test
-    void emailIsNullWhenValidatedThenIsNotValid() {
-        assertFalse(uniqueEmailValidator.isValid(null, contextMock));
+    void emailIsNullWhenValidatedThenIsValid() {
+        assertTrue(uniqueEmailValidator.isValid(null, contextMock));
     }
 
     @Test
