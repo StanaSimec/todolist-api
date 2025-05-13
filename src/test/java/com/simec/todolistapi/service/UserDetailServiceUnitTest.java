@@ -12,13 +12,14 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class UserDetailServiceUnitTest {
 
+    private static final String EMAIL = "tester@mail.com";
     private UserDetailsService userDetailsService;
     private UserDao userDaoMock;
-    private static final String EMAIL = "tester@mail.com";
 
     @BeforeEach
     void setUp() {
