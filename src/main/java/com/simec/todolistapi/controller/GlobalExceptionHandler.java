@@ -4,6 +4,7 @@ import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.simec.todolistapi.dto.ErrorResponseDto;
 import com.simec.todolistapi.dto.ErrorsResponseDto;
+import com.simec.todolistapi.exception.DataSourceException;
 import com.simec.todolistapi.exception.TodoNotFoundException;
 import com.simec.todolistapi.exception.UserNotFoundException;
 import org.springframework.http.HttpStatus;
@@ -50,5 +51,11 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(JWTVerificationException.class)
     public ResponseEntity<ErrorResponseDto> handleInvalidJwt(Exception e) {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorResponseDto("Invalid token"));
+    }
+
+    @ExceptionHandler(DataSourceException.class)
+    public ResponseEntity<ErrorResponseDto> handleDataSourceException(Exception e) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(new ErrorResponseDto("Something went wrong. Contact administrator."));
     }
 }

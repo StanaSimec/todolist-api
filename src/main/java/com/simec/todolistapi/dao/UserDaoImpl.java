@@ -1,7 +1,9 @@
 package com.simec.todolistapi.dao;
 
 import com.simec.todolistapi.entity.User;
+import com.simec.todolistapi.exception.DataSourceException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -32,6 +34,8 @@ public class UserDaoImpl implements UserDao {
             return Optional.ofNullable(jdbcTemplate.queryForObject(sql, new UserRowMapper(), email));
         } catch (EmptyResultDataAccessException e) {
             return Optional.empty();
+        } catch (DataAccessException e) {
+            throw new DataSourceException(e);
         }
     }
 
@@ -39,26 +43,34 @@ public class UserDaoImpl implements UserDao {
     public User create(User user) {
         String sql = "INSERT INTO person (username, email, password) VALUES (?,?,?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
-        jdbcTemplate.update(con -> {
-            PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-            ps.setString(1, user.getUsername());
-            ps.setString(2, user.getEmail());
-            ps.setString(3, user.getPassword());
-            return ps;
-        }, keyHolder);
-        Objects.requireNonNull(keyHolder.getKeys());
-        return new User.Builder()
-                .withId(((Integer) keyHolder.getKeys().get("id")))
-                .withUsername((String) keyHolder.getKeys().get("username"))
-                .withEmail((String) keyHolder.getKeys().get("email"))
-                .withPassword((String) keyHolder.getKeys().get("password"))
-                .build();
+        try {
+            jdbcTemplate.update(con -> {
+                PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+                ps.setString(1, user.getUsername());
+                ps.setString(2, user.getEmail());
+                ps.setString(3, user.getPassword());
+                return ps;
+            }, keyHolder);
+            Objects.requireNonNull(keyHolder.getKeys());
+            return new User.Builder()
+                    .withId(((Integer) keyHolder.getKeys().get("id")))
+                    .withUsername((String) keyHolder.getKeys().get("username"))
+                    .withEmail((String) keyHolder.getKeys().get("email"))
+                    .withPassword((String) keyHolder.getKeys().get("password"))
+                    .build();
+        } catch (DataAccessException e) {
+            throw new DataSourceException(e);
+        }
     }
 
     @Override
     public boolean isEmailUnique(String email) {
         String sql = "SELECT COUNT(*) = 0 FROM person WHERE email = ?";
-        return Boolean.TRUE.equals(jdbcTemplate.queryForObject(sql, Boolean.class, email));
+        try {
+            return Boolean.TRUE.equals(jdbcTemplate.queryForObject(sql, Boolean.class, email));
+        } catch (DataAccessException e) {
+            throw new DataSourceException(e);
+        }
     }
 
     private static class UserRowMapper implements RowMapper<User> {

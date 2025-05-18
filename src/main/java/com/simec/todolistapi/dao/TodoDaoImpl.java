@@ -1,7 +1,9 @@
 package com.simec.todolistapi.dao;
 
 import com.simec.todolistapi.entity.Todo;
+import com.simec.todolistapi.exception.DataSourceException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -33,6 +35,8 @@ public class TodoDaoImpl implements TodoDao {
             return jdbcTemplate.query(sql, new TodoRowMapper(), personId, offset, limit);
         } catch (EmptyResultDataAccessException e) {
             return List.of();
+        } catch (DataAccessException e) {
+            throw new DataSourceException(e);
         }
     }
 
@@ -40,20 +44,24 @@ public class TodoDaoImpl implements TodoDao {
     public Todo create(Todo todo) {
         String sql = "INSERT INTO todo (title, description, person_id) VALUES (?, ?, ?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
-        jdbcTemplate.update(con -> {
-            PreparedStatement preparedStatement = con.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
-            preparedStatement.setString(1, todo.getTitle());
-            preparedStatement.setString(2, todo.getDescription());
-            preparedStatement.setLong(3, todo.getUserId());
-            return preparedStatement;
-        }, keyHolder);
-        Objects.requireNonNull(keyHolder.getKeys());
-        return new Todo.Builder()
-                .withId((Integer) keyHolder.getKeys().get("id"))
-                .withTitle((String) keyHolder.getKeys().get("title"))
-                .withDescription((String) keyHolder.getKeys().get("description"))
-                .withUserId((Integer) keyHolder.getKeys().get("person_id"))
-                .build();
+        try {
+            jdbcTemplate.update(con -> {
+                PreparedStatement preparedStatement = con.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
+                preparedStatement.setString(1, todo.getTitle());
+                preparedStatement.setString(2, todo.getDescription());
+                preparedStatement.setLong(3, todo.getUserId());
+                return preparedStatement;
+            }, keyHolder);
+            Objects.requireNonNull(keyHolder.getKeys());
+            return new Todo.Builder()
+                    .withId((Integer) keyHolder.getKeys().get("id"))
+                    .withTitle((String) keyHolder.getKeys().get("title"))
+                    .withDescription((String) keyHolder.getKeys().get("description"))
+                    .withUserId((Integer) keyHolder.getKeys().get("person_id"))
+                    .build();
+        } catch (Exception e) {
+            throw new DataSourceException(e);
+        }
     }
 
     @Override
@@ -63,25 +71,39 @@ public class TodoDaoImpl implements TodoDao {
             return Optional.ofNullable(jdbcTemplate.queryForObject(sql, new TodoRowMapper(), todoId, personId));
         } catch (EmptyResultDataAccessException e) {
             return Optional.empty();
+        } catch (DataAccessException e) {
+            throw new DataSourceException(e);
         }
     }
 
     @Override
     public void update(Todo todo) {
         String sql = "UPDATE todo SET title = ?, description = ? WHERE id = ?";
-        jdbcTemplate.update(sql, todo.getTitle(), todo.getDescription(), todo.getId());
+        try {
+            jdbcTemplate.update(sql, todo.getTitle(), todo.getDescription(), todo.getId());
+        } catch (DataAccessException e) {
+            throw new DataSourceException(e);
+        }
     }
 
     @Override
     public void deleteById(long id) {
         String sql = "DELETE FROM todo WHERE id = ?";
-        jdbcTemplate.update(sql, id);
+        try {
+            jdbcTemplate.update(sql, id);
+        } catch (DataAccessException e) {
+            throw new DataSourceException(e);
+        }
     }
 
     @Override
     public Integer getTotalCount() {
         String sql = "SELECT COUNT(*) FROM todo";
-        return jdbcTemplate.queryForObject(sql, Integer.class);
+        try {
+            return jdbcTemplate.queryForObject(sql, Integer.class);
+        } catch (DataAccessException e) {
+            throw new DataSourceException(e);
+        }
     }
 
     private static class TodoRowMapper implements RowMapper<Todo> {
